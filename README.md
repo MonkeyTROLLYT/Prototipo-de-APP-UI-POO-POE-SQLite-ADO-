@@ -3,18 +3,18 @@
 ## ¿Que es ADO.NET?
 ADO.NET es el framework nativo dentro de .NET que te proporciona todas las herramientas, clases y arquitecturas necesarias para conectar tu aplicación con bases de datos.
 Donde sus principales componetes so:
-  * Connection 
+  * Connection: 
     Esta se encarga de guarda la conexion con la base de datos
     Ej: string connectionString = "Data Source=mi_base.db";
     var conexion = new SqliteConnection(connectionString))
     //Aqui finalmente abre el camino o la conexion con la base
     conexion.Open()
-  * Command
+  * Command:
     Es la consulta sql que se crea a base de
     Ej: string query = "SELECT Id, Nombre FROM Usuarios WHERE Rol = @RolFiltro;";
-    //Lo veo como declarar que consulta hacer para que no cualquiera venga y no cualquiera persona consulta informacion privada de la base de daTOS
+    //Lo veo como declarar que consulta hacer para que no cualquiera venga y no cualquiera persona consulta informacion privada de la base de datos
     var comando = new SqliteCommand(query, conexion)
-  * DataReader
+  * DataReader:
     Ejecuta el command
     Ej: comando.ExecuteReader();
   
