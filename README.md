@@ -39,7 +39,7 @@ dotnet --version
 
 ## Cómo probar el proyecto
 
-Este repositorio contiene los archivos de código, no el proyecto base de Avalonia. Hay que crear primero un proyecto vacío con `dotnet` y luego reemplazar sus archivos por los del repositorio.
+Este repositorio contiene los archivos de código, no el proyecto base de Avalonia. Hay que crear primero un proyecto vacío con `dotnet`, reemplazar sus archivos por los del repositorio e instalar los paquetes que falten.
 
 ### 1. Descargar el repositorio
 
@@ -57,16 +57,30 @@ dotnet new install Avalonia.Templates
 
 ### 3. Crear el proyecto base
 
-El nombre debe ser **`PruebadeAvalanoia`** (con esa ortografía), porque los archivos del repositorio usan ese namespace.
-
 ```bash
-dotnet new avalonia.app -n PruebadeAvalanoia -o ADO
-cd ADO
+dotnet new avalonia.app -n PruebadeAvalanoia -o prueba -f net8.0
+cd prueba
 ```
 
-Abre `PruebadeAvalanoia.csproj` y verifica que el `TargetFramework` sea `net8.0`. Si la plantilla puso otro, cámbialo.
+- `-n PruebadeAvalanoia` es el nombre del proyecto y **debe escribirse exactamente así**, porque los archivos del repositorio usan ese namespace. Si lo escribes distinto, aparecerán errores de `InitializeComponent` y `x:Class`.
+- `-o prueba` es el nombre de la carpeta donde se crea. Puedes poner el que quieras.
+- `-f net8.0` fija la versión de .NET a 8.0.
 
-### 4. Instalar los paquetes adicionales
+### 4. Reemplazar los archivos con los del repositorio
+
+Copia estos archivos del repositorio descargado a la carpeta `prueba`, aceptando reemplazar los que ya existan:
+
+- `App.axaml` y `App.axaml.cs`
+- `MainWindow.axaml` y `MainWindow.axaml.cs`
+- `VentanaClientes.axaml` y `VentanaClientes.axaml.cs`
+- `Cliente.cs`
+- `DAO.cs`
+
+No reemplaces el `.csproj`.
+
+### 5. Instalar los paquetes que faltan
+
+Desde la carpeta `prueba`, la que contiene `PruebadeAvalanoia.csproj`:
 
 ```bash
 dotnet add package Avalonia.Controls.DataGrid --version 12.1.2
@@ -75,21 +89,7 @@ dotnet add package Microsoft.Data.Sqlite --version 8.0.11
 
 Los demás paquetes (`Avalonia`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`, `Avalonia.Fonts.Inter`) ya vienen con la plantilla. El DataGrid debe tener la misma versión que Avalonia o una muy cercana; si la plantilla instala otra versión de Avalonia, ajusta también la del DataGrid.
 
-### 5. Reemplazar los archivos con los del repositorio
-
-Copia estos archivos del repositorio descargado a la carpeta `ADO` que acabas de crear, aceptando reemplazar los que ya existan:
-
-- `App.axaml` y `App.axaml.cs`
-- `MainWindow.axaml` y `MainWindow.axaml.cs`
-- `VentanaClientes.axaml` y `VentanaClientes.axaml.cs`
-- `Cliente.cs`
-- `DAO.cs`
-
-No reemplaces el `.csproj` (ya tiene los paquetes que instalaste).
-
 ### 6. Ejecutar
-
-Desde la carpeta `ADO`, la que contiene `PruebadeAvalanoia.csproj`:
 
 ```bash
 dotnet run
@@ -100,7 +100,7 @@ Si no sabes en qué carpeta estás, usa `dir` (Windows) o `ls` (Linux/macOS) y c
 ## Estructura de los archivos
 
 ```
-ADO/
+prueba/   (o la carpeta que hayas elegido con -o)
 ├── Program.cs                  Punto de entrada, configura Avalonia
 ├── App.axaml / App.axaml.cs    Aplicación: estilos y ventana inicial
 ├── MainWindow.axaml / .cs      Formulario de registro y validaciones
@@ -136,6 +136,6 @@ Program → App → MainWindow
 
 **`dotnet run` dice que no encuentra un proyecto:** no estás en la carpeta correcta. Entra a la que contiene `PruebadeAvalanoia.csproj`.
 
-**El editor muestra errores en rojo pero el proyecto compila:** pasa a veces en VS Code con Avalonia. Ejecuta `dotnet build`; si dice `0 Error(s)`, reinicia el editor con `Ctrl+Shift+P` → *.NET: Restart Language Server*.
+**El editor muestra errores en rojo pero el proyecto compila:** pasa a veces en VS Code con Avalonia. Ejecuta `dotnet build`; si dice `0 Error(s)`, reinicia el editor con `Ctrl+Shift+P` → *.NET: Restart Language Server* o reinicar vs code.
 
 **Quiero empezar con la base de datos vacía:** cierra la app y borra `mi_base.db` (está en `bin/Debug/net8.0/`). Se crea de nuevo al abrir la app.
