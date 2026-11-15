@@ -18,48 +18,86 @@ Aplicación de escritorio hecha con **C#** y **Avalonia UI** para registrar clie
 
 | Tecnología | Versión |
 |---|---|
-| .NET | 8.0 |
-| Avalonia UI | 12.1.4 |
+| .NET SDK | 8.0 |
+| Avalonia / Avalonia.Desktop | 12.1.4 |
+| Avalonia.Themes.Fluent | 12.1.4 |
+| Avalonia.Fonts.Inter | 12.1.4 |
 | Avalonia.Controls.DataGrid | 12.1.2 |
 | Microsoft.Data.Sqlite | 8.0.11 |
 
 ## Requisitos
 
-Solo necesitas instalar el **[SDK de .NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)**.
+- **[SDK de .NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)** (el SDK completo, no solo el runtime).
+- **Plantillas de Avalonia**, para crear el proyecto base con `dotnet`.
+- Conexión a internet para descargar las plantillas y los paquetes de NuGet.
 
-No hace falta instalar Avalonia ni ningún otro paquete a mano. Están declarados en el archivo `PruebadeAvalanoia.csproj` y `dotnet` los descarga automáticamente de NuGet la primera vez que compilas.
-
-Para comprobar que tienes .NET instalado:
+Comprueba que tienes .NET instalado:
 
 ```bash
 dotnet --version
 ```
 
-## Cómo ejecutar el proyecto
+## Cómo probar el proyecto
 
-1. Clona el repositorio:
+Este repositorio contiene los archivos de código, no el proyecto base de Avalonia. Hay que crear primero un proyecto vacío con `dotnet` y luego reemplazar sus archivos por los del repositorio.
 
-   ```bash
-   git clone <URL-del-repositorio>
-   ```
+### 1. Descargar el repositorio
 
-2. Entra a la carpeta del proyecto, la que contiene `PruebadeAvalanoia.csproj` y `Program.cs`:
+```bash
+git clone <URL-del-repositorio>
+```
 
-   ```bash
-   cd <ruta-del-repositorio>/ADO
-   ```
+O descárgalo como ZIP desde GitHub (**Code → Download ZIP**) y descomprímelo.
 
-   Si no sabes dónde estás, `dir` (Windows) o `ls` (Linux/macOS) muestra el contenido de la carpeta actual. Debes ver el archivo `.csproj`.
+### 2. Instalar las plantillas de Avalonia
 
-3. Ejecuta la aplicación:
+```bash
+dotnet new install Avalonia.Templates
+```
 
-   ```bash
-   dotnet run
-   ```
+### 3. Crear el proyecto base
 
-La primera ejecución tarda un poco más porque descarga los paquetes.
+El nombre debe ser **`PruebadeAvalanoia`** (con esa ortografía), porque los archivos del repositorio usan ese namespace.
 
-## Estructura del proyecto
+```bash
+dotnet new avalonia.app -n PruebadeAvalanoia -o ADO
+cd ADO
+```
+
+Abre `PruebadeAvalanoia.csproj` y verifica que el `TargetFramework` sea `net8.0`. Si la plantilla puso otro, cámbialo.
+
+### 4. Instalar los paquetes adicionales
+
+```bash
+dotnet add package Avalonia.Controls.DataGrid --version 12.1.2
+dotnet add package Microsoft.Data.Sqlite --version 8.0.11
+```
+
+Los demás paquetes (`Avalonia`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`, `Avalonia.Fonts.Inter`) ya vienen con la plantilla. El DataGrid debe tener la misma versión que Avalonia o una muy cercana; si la plantilla instala otra versión de Avalonia, ajusta también la del DataGrid.
+
+### 5. Reemplazar los archivos con los del repositorio
+
+Copia estos archivos del repositorio descargado a la carpeta `ADO` que acabas de crear, aceptando reemplazar los que ya existan:
+
+- `App.axaml` y `App.axaml.cs`
+- `MainWindow.axaml` y `MainWindow.axaml.cs`
+- `VentanaClientes.axaml` y `VentanaClientes.axaml.cs`
+- `Cliente.cs`
+- `DAO.cs`
+
+No reemplaces el `.csproj` (ya tiene los paquetes que instalaste).
+
+### 6. Ejecutar
+
+Desde la carpeta `ADO`, la que contiene `PruebadeAvalanoia.csproj`:
+
+```bash
+dotnet run
+```
+
+Si no sabes en qué carpeta estás, usa `dir` (Windows) o `ls` (Linux/macOS) y comprueba que aparece el archivo `.csproj`. Para moverte, usa `cd ruta_de_la_carpeta`.
+
+## Estructura de los archivos
 
 ```
 ADO/
@@ -81,18 +119,23 @@ Program → App → MainWindow
                   └─ Mensaje   → ClienteDao.ObtenerTodos() → VentanaClientes
 ```
 
-Cada clase tiene una sola responsabilidad:
-
 - **MainWindow** recibe los eventos de la interfaz y valida los datos.
 - **ClienteDao** es el único que escribe SQL y habla con la base de datos (patrón DAO).
 - **Cliente** solo transporta datos.
 - **VentanaClientes** solo muestra la lista que recibe.
 
+## Posibles mejoras
+
+- Guardar también el segundo nombre y el segundo apellido (el formulario ya tiene los campos, pero no se almacenan).
+- Mover las validaciones a una clase aparte.
+- Permitir editar y eliminar clientes.
 
 ## Problemas frecuentes
+
+**Errores `InitializeComponent` o `x:Class`:** el nombre del proyecto y el namespace no coinciden. Revisa que el proyecto se llame `PruebadeAvalanoia`.
 
 **`dotnet run` dice que no encuentra un proyecto:** no estás en la carpeta correcta. Entra a la que contiene `PruebadeAvalanoia.csproj`.
 
 **El editor muestra errores en rojo pero el proyecto compila:** pasa a veces en VS Code con Avalonia. Ejecuta `dotnet build`; si dice `0 Error(s)`, reinicia el editor con `Ctrl+Shift+P` → *.NET: Restart Language Server*.
 
-**Quiero empezar con la base de datos vacía:** cierra la app y borra el archivo `mi_base.db` (está en `bin/Debug/net8.0/`). Se crea de nuevo al abrir la app.
+**Quiero empezar con la base de datos vacía:** cierra la app y borra `mi_base.db` (está en `bin/Debug/net8.0/`). Se crea de nuevo al abrir la app.
